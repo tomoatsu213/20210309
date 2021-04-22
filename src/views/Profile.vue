@@ -9,12 +9,12 @@
       </div>
       <div class="profile">
         <div class="flex-profile">
-          <p class="profile-name">{{name}}</p>
+          <p class="profile-name">{{ name }}</p>
           <div @click="edit">
             <button>変更する</button>
           </div>
         </div>
-        <p class="text" v-if="active">{{profile}}</p>
+        <p class="text" v-if="active">{{ profile }}</p>
         <input type="text" v-model="profile" v-else />
       </div>
       <Message />
@@ -34,18 +34,16 @@ export default {
       profile: this.$store.state.user.profile,
     };
   },
-  methods:{
-    edit(){
+  methods: {
+    edit() {
       if (!this.active) {
         axios
           .put("https://secret-sea-44927.herokuapp.com/api/user", {
             email: this.$store.state.user.email,
             profile: this.profile,
           })
-          .then((response)=>{
-            this.$store.dispatch("changeUserData", {
-              profile: this.profile,
-            });
+          .then((response) => {
+            this.$store.commit("changeUserData", this.profile);
             console.log(response);
           });
       }
@@ -54,8 +52,8 @@ export default {
   },
   components: {
     SideNavi,
-    Message
-  }
+    Message,
+  },
 };
 </script>
 
@@ -101,5 +99,8 @@ button {
   border-radius: 25px;
   display: block;
   margin: 0 0 0 auto;
+}
+input {
+  color: black;
 }
 </style>

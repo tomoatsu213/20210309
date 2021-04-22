@@ -4,30 +4,25 @@
       <div class="message">
         <div class="flex">
           <p class="name">{{ value.name }}</p>
-          <img
-            src="../assets/heart.png"
-            alt="heart"
-            class="icon"
-            @click="fav(index)"
-          />
+          <img class="icon" src="../assets/heart.png" @click="fav(index)" alt />
           <p class="number">{{ value.like.length }}</p>
           <img
-            src="../assets/cross.png"
-            alt="cross"
             class="icon"
+            src="../assets/cross.png"
             @click="del(index)"
+            alt
             v-if="path && profile"
           />
           <img
-            src="../assets/detail.png"
-            alt="detail"
             class="icon detail"
+            src="../assets/detail.png"
             @click="
               $router.push({
                 path: '/detail/' + value.item.id,
                 params: { id: value.item.id },
               })
             "
+            alt
             v-if="profile"
           />
         </div>
@@ -61,7 +56,7 @@ export default {
               url: "https://secret-sea-44927.herokuapp.com/api/like",
               data: {
                 share_id: this.shares[index].item.id,
-                user_id: this.$store.state.user_id,
+                user_id: this.$store.state.user.id,
               },
             }).then((response) => {
               console.log(response);
@@ -73,11 +68,18 @@ export default {
           }
         });
       } else {
-        axios.post("https://secret-sea-44927.herokuapp.com/api/like", {
-          share_id: this.shares[index].item.id,
-          user_id: this.$router.currentRoute.path,
-          force: true,
-        });
+        axios
+          .post("https://secret-sea-44927.herokuapp.com/api/like", {
+            share_id: this.shares[index].item.id,
+            user_id: this.$store.state.user.id,
+          })
+          .then((response) => {
+            console.log(response);
+            this.$router.go({
+              path: this.$router.currentRoute.path,
+              force: true,
+            });
+          });
       }
     },
     del(index) {
@@ -97,7 +99,7 @@ export default {
     async getShares() {
       let data = [];
       const shares = await axios.get(
-        "https://secret-sea-44927.herokuapp.com/api/shares/"
+        "https://secret-sea-44927.herokuapp.com/api/shares"
       );
       for (let i = 0; i < shares.data.data.length; i++) {
         await axios
@@ -123,7 +125,7 @@ export default {
       console.log(this.shares);
     },
   },
-  created(){
+  created() {
     if (this.$route.name === "home") {
       this.path = false;
     }
@@ -131,7 +133,7 @@ export default {
       this.profile = false;
     }
     this.getShares();
-  }
+  },
 };
 </script>
 
